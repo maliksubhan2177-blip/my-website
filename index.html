@@ -3,229 +3,290 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>माय होटल - My Hotel</title>
+<title>Roomshala Hotel Lotus Villa</title>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-  body { background: #faf7f2; color: #333; }
+  * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+  body { background: #f8f9fa; color: #333; line-height: 1.6; }
 
-  /* Navbar */
-  nav {
-    background: #1a1a1a;
+  /* Header */
+  header {
+    background: #1a1a2e;
     color: #fff;
-    padding: 15px 40px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+    padding: 15px 20px;
     position: sticky;
     top: 0;
-    z-index: 100;
+    z-index: 1000;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
   }
-  nav h1 { color: #d4af37; font-size: 24px; }
-  nav ul { display: flex; list-style: none; gap: 25px; }
-  nav ul li a {
-    color: #fff;
-    text-decoration: none;
-    font-size: 15px;
-    transition: color 0.3s;
-  }
-  nav ul li a:hover { color: #d4af37; }
+  header h1 { font-size: 20px; color: #e94560; }
+  header p { font-size: 12px; color: #ccc; }
 
-  /* Hero */
+  /* Hero Section */
   .hero {
-    height: 90vh;
-    background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)),
-                url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1600') center/cover;
-    color: #fff;
+    height: 60vh;
+    background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('https://images.unsplash.com/photo-1566073771259-6a8506099945?w=1200') center/cover;
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
+    color: #fff;
     padding: 20px;
   }
-  .hero h2 { font-size: 52px; margin-bottom: 15px; }
-  .hero p { font-size: 20px; margin-bottom: 30px; }
-  .btn {
-    background: #d4af37;
-    color: #1a1a1a;
-    padding: 14px 35px;
+  .hero h2 { font-size: 32px; margin-bottom: 10px; text-shadow: 2px 2px 4px rgba(0,0,0,0.5); }
+  .hero p { font-size: 16px; margin-bottom: 20px; }
+  .btn-primary {
+    background: #e94560;
+    color: #fff;
+    padding: 12px 30px;
     border: none;
+    border-radius: 25px;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
-    border-radius: 4px;
+    text-decoration: none;
     transition: transform 0.3s;
   }
-  .btn:hover { transform: scale(1.05); }
+  .btn-primary:hover { transform: scale(1.05); }
 
   /* Sections */
-  section { padding: 70px 40px; max-width: 1200px; margin: auto; }
+  section { padding: 40px 20px; max-width: 1000px; margin: auto; }
   .section-title {
     text-align: center;
-    font-size: 36px;
-    margin-bottom: 40px;
-    color: #1a1a1a;
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #1a1a2e;
+    position: relative;
   }
   .section-title::after {
     content: '';
     display: block;
-    width: 60px;
+    width: 50px;
     height: 3px;
-    background: #d4af37;
+    background: #e94560;
     margin: 10px auto;
   }
 
   /* Rooms */
-  .rooms {
+  .rooms-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 25px;
+    gap: 20px;
   }
   .room-card {
     background: #fff;
-    border-radius: 8px;
+    border-radius: 15px;
     overflow: hidden;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.08);
     transition: transform 0.3s;
   }
   .room-card:hover { transform: translateY(-5px); }
   .room-card img { width: 100%; height: 200px; object-fit: cover; }
   .room-info { padding: 20px; }
-  .room-info h3 { margin-bottom: 10px; color: #1a1a1a; }
-  .room-info p { color: #666; margin-bottom: 10px; }
-  .price { color: #d4af37; font-weight: bold; font-size: 18px; }
+  .room-info h3 { color: #1a1a2e; margin-bottom: 10px; }
+  .room-info p { color: #666; font-size: 14px; margin-bottom: 15px; }
+  .price { color: #e94560; font-size: 20px; font-weight: bold; margin-bottom: 15px; display: block; }
+  .btn-book {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 10px 20px;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    width: 100%;
+    font-size: 14px;
+  }
 
   /* Amenities */
-  .amenities-section { background: #fff; }
-  .amenities {
+  .amenities-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-    gap: 20px;
+    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
+    gap: 15px;
     text-align: center;
   }
-  .amenity {
-    padding: 25px;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    transition: all 0.3s;
+  .amenity-item {
+    background: #fff;
+    padding: 20px 10px;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
   }
-  .amenity:hover { border-color: #d4af37; background: #faf7f2; }
-  .amenity .icon { font-size: 36px; margin-bottom: 10px; }
+  .amenity-item i { font-size: 28px; color: #e94560; margin-bottom: 10px; }
+  .amenity-item p { font-size: 13px; color: #555; }
 
-  /* Contact */
-  .contact-form {
-    max-width: 500px;
-    margin: auto;
-    display: flex;
-    flex-direction: column;
+  /* Contact Buttons */
+  .contact-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 15px;
+    margin-bottom: 30px;
   }
-  .contact-form input, .contact-form textarea {
-    padding: 12px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    font-size: 15px;
+  .contact-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    padding: 15px;
+    border-radius: 10px;
+    text-decoration: none;
+    color: #fff;
+    font-weight: bold;
+    font-size: 16px;
+    transition: opacity 0.3s;
   }
-  .contact-form textarea { min-height: 100px; resize: vertical; }
+  .contact-btn:hover { opacity: 0.9; }
+  .btn-call { background: #28a745; }
+  .btn-whatsapp { background: #25D366; }
+  .btn-email { background: #007bff; }
+  .btn-map { background: #ea4335; }
+
+  /* Map */
+  .map-container {
+    border-radius: 15px;
+    overflow: hidden;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+  }
+  .map-container iframe { width: 100%; height: 300px; border: 0; }
 
   /* Footer */
   footer {
-    background: #1a1a1a;
-    color: #ccc;
+    background: #1a1a2e;
+    color: #fff;
     text-align: center;
-    padding: 25px;
+    padding: 20px;
     margin-top: 40px;
   }
-  footer span { color: #d4af37; }
+  footer p { font-size: 14px; color: #ccc; }
+
+  /* Floating WhatsApp Button */
+  .float-wa {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: #25D366;
+    color: #fff;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 30px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    text-decoration: none;
+    z-index: 1000;
+  }
 
   @media(max-width: 600px) {
-    nav { flex-direction: column; gap: 10px; }
-    .hero h2 { font-size: 36px; }
+    .hero h2 { font-size: 24px; }
+    .contact-buttons { grid-template-columns: 1fr; }
   }
 </style>
 </head>
 <body>
 
-<nav>
-  <h1>🏨 माय होटल</h1>
-  <ul>
-    <li><a href="#home">Home</a></li>
-    <li><a href="#rooms">Rooms</a></li>
-    <li><a href="#amenities">Amenities</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
+<header>
+  <h1>Roomshala Hotel Lotus Villa</h1>
+  <p>Chittaranjan Park, New Delhi</p>
+</header>
 
-<section class="hero" id="home">
-  <h2>माय होटल में आपका स्वागत है</h2>
-  <p>आराम, लग्ज़री और बेहतरीन सेवा का अनुभव</p>
-  <button class="btn" onclick="document.getElementById('rooms').scrollIntoView({behavior:'smooth'})">अभी बुक करें</button>
+<section class="hero">
+  <h2>आपका स्वागत है</h2>
+  <p>आराम, लग्ज़री और बेहतरीन सेवा का अनुभव करें</p>
+  <a href="#rooms" class="btn-primary">अभी बुक करें</a>
 </section>
 
 <section id="rooms">
   <h2 class="section-title">हमारे कमरे</h2>
-  <div class="rooms">
+  <div class="rooms-grid">
     <div class="room-card">
-      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600" alt="Deluxe Room">
+      <img src="https://images.unsplash.com/photo-1631049307264-da0ec9d70304?w=600" alt="Standard Room">
+      <div class="room-info">
+        <h3>Standard Room</h3>
+        <p>आरामदायक कमरा, AC, TV और Free WiFi के साथ।</p>
+        <span class="price">₹1,500 / रात</span>
+        <button class="btn-book" onclick="bookNow('Standard Room')">Book Now</button>
+      </div>
+    </div>
+    <div class="room-card">
+      <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600" alt="Deluxe Room">
       <div class="room-info">
         <h3>Deluxe Room</h3>
-        <p>आरामदायक डीलक्स रूम, शहर का नज़ारा</p>
-        <p class="price">₹3,500 / रात</p>
+        <p>विशाल कमरा, प्रीमियम बेडिंग और शानदार नज़ारा।</p>
+        <span class="price">₹2,500 / रात</span>
+        <button class="btn-book" onclick="bookNow('Deluxe Room')">Book Now</button>
       </div>
     </div>
     <div class="room-card">
-      <img src="https://images.unsplash.com/photo-1590490360182-c33d57733427?w=600" alt="Suite">
+      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600" alt="Premium Suite">
       <div class="room-info">
         <h3>Premium Suite</h3>
-        <p>लग्ज़री स्वीट, सभी आधुनिक सुविधाओं के साथ</p>
-        <p class="price">₹6,500 / रात</p>
-      </div>
-    </div>
-    <div class="room-card">
-      <img src="https://images.unsplash.com/photo-1582719478250-c89cae4dc85b?w=600" alt="Family Room">
-      <div class="room-info">
-        <h3>Family Room</h3>
-        <p>परिवार के लिए विशाल और सुविधाजनक</p>
-        <p class="price">₹5,000 / रात</p>
+        <p>लग्ज़री स्वीट, लिविंग एरिया और सभी आधुनिक सुविधाएं।</p>
+        <span class="price">₹4,000 / रात</span>
+        <button class="btn-book" onclick="bookNow('Premium Suite')">Book Now</button>
       </div>
     </div>
   </div>
 </section>
 
-<section class="amenities-section" id="amenities">
+<section id="amenities">
   <h2 class="section-title">सुविधाएं</h2>
-  <div class="amenities">
-    <div class="amenity"><div class="icon">📶</div><p>Free WiFi</p></div>
-    <div class="amenity"><div class="icon">🍽️</div><p>Restaurant</p></div>
-    <div class="amenity"><div class="icon">🏊</div><p>Swimming Pool</p></div>
-    <div class="amenity"><div class="icon">🅿️</div><p>Free Parking</p></div>
-    <div class="amenity"><div class="icon">💆</div><p>Spa</p></div>
-    <div class="amenity"><div class="icon">🏋️</div><p>Gym</p></div>
+  <div class="amenities-grid">
+    <div class="amenity-item"><i class="fas fa-wifi"></i><p>Free WiFi</p></div>
+    <div class="amenity-item"><i class="fas fa-snowflake"></i><p>AC Rooms</p></div>
+    <div class="amenity-item"><i class="fas fa-tv"></i><p>Smart TV</p></div>
+    <div class="amenity-item"><i class="fas fa-parking"></i><p>Parking</p></div>
+    <div class="amenity-item"><i class="fas fa-concierge-bell"></i><p>Room Service</p></div>
+    <div class="amenity-item"><i class="fas fa-shield-alt"></i><p>24/7 Security</p></div>
   </div>
 </section>
 
 <section id="contact">
   <h2 class="section-title">संपर्क करें</h2>
-  <form class="contact-form" onsubmit="bookRoom(event)">
-    <input type="text" placeholder="आपका नाम" required>
-    <input type="email" placeholder="ईमेल" required>
-    <input type="tel" placeholder="फ़ोन नंबर" required>
-    <input type="date" required>
-    <textarea placeholder="आपका संदेश" required></textarea>
-    <button type="submit" class="btn">भेजें</button>
-  </form>
+  
+  <div class="contact-buttons">
+    <!-- यहाँ अपना नंबर डालें (बिना + के, 91 के साथ) -->
+    <a href="tel:+919876543210" class="contact-btn btn-call">
+      <i class="fas fa-phone"></i> Call Now
+    </a>
+    <a href="https://wa.me/919876543210" class="contact-btn btn-whatsapp" target="_blank">
+      <i class="fab fa-whatsapp"></i> WhatsApp
+    </a>
+    <!-- यहाँ अपना ईमेल डालें -->
+    <a href="mailto:info@roomshalahotel.com" class="contact-btn btn-email">
+      <i class="fas fa-envelope"></i> Email Us
+    </a>
+    <a href="https://maps.google.com/?q=Chittaranjan+Park+New+Delhi+110019" class="contact-btn btn-map" target="_blank">
+      <i class="fas fa-map-marker-alt"></i> Location
+    </a>
+  </div>
+
+  <h3 style="text-align:center; margin-bottom:15px; color:#1a1a2e;">हमारा पता</h3>
+  <div class="map-container">
+    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3504.0!2d77.23!3d28.57!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMjjCsDM0JzEyLjAiTiA3N8KwMTMnNDguMCJF!5e0!3m2!1sen!2sin!4v1600000000000!5m2!1sen!2sin" allowfullscreen="" loading="lazy"></iframe>
+  </div>
+  <p style="text-align:center; margin-top:15px; color:#666;">
+    <i class="fas fa-map-pin"></i> G7P4+GJX, Block E, Chittaranjan Park, New Delhi, Delhi 110019
+  </p>
 </section>
 
 <footer>
-  <p>© 2026 <span>माय होटल</span> | सभी अधिकार सुरक्षित</p>
-  <p>📍 दिल्ली, भारत | 📞 +91-9876543210</p>
+  <p>© 2026 Roomshala Hotel Lotus Villa</p>
+  <p>All Rights Reserved</p>
 </footer>
 
+<!-- Floating WhatsApp Button -->
+<a href="https://wa.me/919876543210" class="float-wa" target="_blank">
+  <i class="fab fa-whatsapp"></i>
+</a>
+
 <script>
-  function bookRoom(e) {
-    e.preventDefault();
-    alert("धन्यवाद! आपकी बुकिंग रिक्वेस्ट मिल गई है। हम जल्द ही आपसे संपर्क करेंगे। 🏨");
-    e.target.reset();
+  function bookNow(roomName) {
+    // WhatsApp पर booking message भेजने के लिए
+    let phoneNumber = "919876543210"; // यहाँ अपना नंबर डालें
+    let message = `Hello, I want to book the ${roomName} at Roomshala Hotel Lotus Villa.`;
+    let url = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
+    window.open(url, '_blank');
   }
 </script>
 
