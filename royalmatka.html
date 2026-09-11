@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Matka Showdown</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@600;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --gold: #D4AF37;
+            --gold-light: #F3E5AB;
+            --felt-green: #0f5132;
+            --dark-bg: #0a0a0c;
+            --card-bg: #16161a;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--dark-bg);
+            color: #e0e0e0;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        .font-royal { font-family: 'Cinzel', serif; }
+        .text-gold { color: var(--gold); }
+        .bg-gold { background-color: var(--gold); }
+        .border-gold { border-color: var(--gold); }
+        .bg-felt { background-color: var(--felt-green); }
+        .bg-card { background-color: var(--card-bg); }
+        
+        .glass {
+            background: rgba(22, 22, 26, 0.85);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(212, 175, 55, 0.2);
+        }
+        
+        .glow-gold {
+            box-shadow: 0 0 15px rgba(212, 175, 55, 0.4), 0 0 30px rgba(212, 175, 55, 0.1);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #D4AF37 0%, #AA8C2C 100%);
+            color: #0a0a0c;
+            font-weight: 700;
+            transition: all 0.3s ease;
+        }
+        .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(212, 175, 55, 0.4); }
+        .btn-primary:active { transform: translateY(0); }
+
+        .screen { display: none; min-height: 100vh; }
+        .screen.active { display: flex; flex-direction: column; }
+
+        #game-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+        
+        .flick-zone {
+            background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, transparent 70%);
+            border: 2px dashed rgba(212, 175, 55, 0.3);
+        }
+
+        .power-bar-fill {
+            transition: width 0.05s linear;
+            background: linear-gradient(90deg, #10b981, #f59e0b, #ef4444);
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold); border-radius: 3px; }
+
+        .animate-pulse-gold { animation: pulseGold 2s infinite; }
+        @keyframes pulseGold {
+            0%, 100% { box-shadow: 0 0 5px rgba(212, 175, 55, 0.5); }
+            50% { box-shadow: 0 0 20px rgba(212, 175, 55, 0.8); }
+        }
+    </style>
+</head>
+<body class="flex justify-center">
+
+    <div id="app-container" class="w-full max-w-md mx-auto relative min-h-screen bg-[#0a0a0c] shadow-2xl overflow-hidden">
+        
+        <!-- ==================== LOGIN SCREEN ==================== -->
+        <div id="screen-login" class="screen active p-6 justify-center items-center text-center">
+            <div class="mb-8">
+                <div class="w-20 h-20 mx-auto bg-gold rounded-full flex items-center justify-center mb-4 glow-gold">
+                    <span class="text-3xl font-royal text-black">R</span>
+                </div>
+                <h1 class="text-3xl font-royal text-gold">Royal Matka</h1>
+                <p class="text-gray-400 text-sm mt-1">Showdown</p>
+            </div>
+
+            <div id="login-step1" class="w-full space-y-4">
+                <div class="text-left">
+                    <label class="text-xs text-gray-400 uppercase tracking-wider">Mobile Number</label>
+                    <div class="flex mt-1">
+                        <span class="inline-flex items-center px-3 bg-card border border-r-0 border-gray-700 rounded-l-lg text-gray-400">+91</span>
+                        <input type="tel" id="input-phone" maxlength="10" placeholder="9876543210" class="w-full px-4 py-3 bg-card border border-gray-700 rounded-r-lg focus:outline-none focus:border-gold text-white">
+                    </div>
+                </div>
+                <button onclick="sendOTP()" class="w-full btn-primary py-3 rounded-lg text-lg">Send OTP</button>
+                <p class="text-xs text-gray-500 mt-4">No social logins. Secure & Private.</p>
+            </div>
+
+            <div id="login-step2" class="w-full space-y-4 hidden">
+                <p class="text-gray-300">Enter OTP sent to <span id="display-phone" class="text-gold font-semibold"></span></p>
+                <input type="text" id="input-otp" maxlength="6" placeholder="6-digit OTP" class="w-full px-4 py-3 bg-card border border-gray-700 rounded-lg focus:outline-none focus:border-gold text-white text-center text-2xl tracking-widest">
+                <button onclick="verifyOTP()" class="w-full btn-primary py-3 rounded-lg text-lg">Verify & Login</button>
+                <button onclick="document.getElementById('login-step2').classList.add('hidden'); document.getElementById('login-step1').classList.remove('hidden');" class="text-sm text-gray-400 underline">Change Number</button>
+            </div>
+
+            <div class="mt-8 flex items-center justify-center space-x-2 text-xs text-gray-500">
+                <svg class="w-4 h-4 text-green-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                <span>100% Secure & Encrypted | 18+ Only</span>
+            </div>
+        </div>
+
+        <!-- ==================== DASHBOARD SCREEN ==================== -->
+        <div id="screen-dashboard" class="screen pb-20">
+            <!-- Header -->
+            <div class="glass p-4 flex justify-between items-center sticky top-0 z-10">
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showScreen('profile')">
+                    <div class="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-gold font-bold" id="dash-avatar">U</div>
+                    <div>
+                        <p class="text-sm font-semibold" id="dash-name">User</p>
+                        <p class="text-xs text-green-400 flex items-center"><span class="w-1.5 h-1.5 bg-green-400 rounded-full mr-1"></span>KYC Verified</p>
+                    </div>
+                </div>
+                <div class="flex items-center space-x-2 bg-card px-3 py-2 rounded-full border border-gray-700">
+                    <span class="text-gold text-lg">🪙</span>
+                    <span class="font-bold text-white" id="dash-coins">0</span>
+                    <button onclick="showScreen('bank')" class="bg-gold text-black text-xs font-bold px-2 py-1 rounded-full ml-1">+</button>
+                </div>
+            </div>
+
+            <!-- Central Pot Animation / Hero -->
+            <div class="p-4 text-center relative">
+                <div class="relative w-32 h-32 mx-auto mb-4">
+                    <div class="absolute inset-0 bg-gold rounded-full opacity-20 animate-ping"></div>
+                    <div class="absolute inset-2 bg-gradient-to-br from-yellow-600 to-yellow-900 rounded-full flex items-center justify-center glow-gold">
+                        <span class="text-4xl">🏺</span>
+                    </div>
+                </div>
+                <h2 class="text-xl font-royal text-gold">Royal Matka Showdown</h2>
+                <p class="text-xs text-gray-400 mt-1">Skill. Strategy. Glory.</p>
+            </div>
+
+            <!-- Bank & Shop Box -->
+            <div class="px-4 mb-6">
+                <div onclick="showScreen('bank')" class="glass p-4 rounded-xl flex items-center justify-between cursor-pointer hover:border-gold transition-colors">
+                    <div class="flex items-center space-x-3">
+                        <div class="w-12 h-12 bg-green-900/50 rounded-lg flex items-center justify-center text-2xl">🏦</div>
+                        <div>
+                            <h3 class="font-bold text-white">Bank & Shop</h3>
+                            <p class="text-xs text-gray-400">Buy coins, withdraw winnings</p>
+                        </div>
+                    </div>
+                    <svg class="w-5 h-5 text-gold" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
+                </div>
+            </div>
+
+            <!-- Game Lobby -->
+            <div class="px-4">
+                <h3 class="text-lg font-bold mb-3 flex items-center">
+                    <span class="text-gold mr-2">♟️</span> Select Table
+                </h3>
+                <div class="grid grid-cols-2 gap-3" id="lobby-tables">
+                    <!-- Tables injected via JS -->
+                </div>
+            </div>
+
+            <!-- Bottom Nav -->
+            <div class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-md glass border-t border-gray-800 flex justify-around py-3 z-20">
+                <button onclick="showScreen('dashboard')" class="flex flex-col items-center text-gold">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
+                    <span class="text-xs mt-1">Home</span>
+                </button>
+                <button onclick="showScreen('bank')" class="flex flex-col items-center text-gray-400 hover:text-gold">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"></path><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"></path></svg>
+                    <span class="text-xs mt-1">Bank</span>
+                </button>
+                <button onclick="showScreen('help')" class="flex flex-col items-center text-gray-400 hover:text-gold">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 2 2 0 100-4zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"></path></svg>
+                    <span class="text-xs mt-1">Support</span>
+                </button>
+                <button onclick="showScreen('settings')" class="flex flex-col items-center text-gray-400 hover:text-gold">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"></path></svg>
+                    <span class="text-xs mt-1">Settings</span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ==================== BANK & SHOP SCREEN ==================== -->
+        <div id="screen-bank" class="screen p-4 pb-20">
+            <div class="flex items-center mb-6">
+                <button onclick="showScreen('dashboard')" class="text-gold mr-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h2 class="text-xl font-royal text-gold">Bank & Shop</h2>
+            </div>
+
+            <div class="glass p-4 rounded-xl mb-6 flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-gray-400">Current Balance</p>
+                    <p class="text-2xl font-bold text-white"><span class="text-gold">🪙</span> <span id="bank-coins">0</span></p>
+                </div>
+                <button class="bg-red-900/50 text-red-400 px-4 py-2 rounded-lg text-sm font-semibold border border-red-800">Withdraw</button>
+            </div>
+
+            <div class="bg-green-900/20 border border-green-800 p-3 rounded-lg flex items-center mb-6">
+                <svg class="w-5 h-5 text-green-400 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"></path></svg>
+                <p class="text-xs text-green-300">All transactions are 100% Secure & Encrypted.</p>
+            </div>
+
+            <h3 class="text-lg font-bold mb-3">Buy Coins</h3>
+            <div class="grid grid-cols-2 gap-3" id="coin-packages">
+                <!-- Packages injected via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== GAMEPLAY SCREEN ==================== -->
+        <div id="screen-game" class="screen relative h-screen bg-black">
+            <canvas id="game-canvas"></canvas>
+            
+            <!-- Top HUD -->
+            <div class="absolute top-0 left-0 right-0 p-3 flex justify-between items-center z-10">
+                <div class="glass px-3 py-1.5 rounded-full flex items-center">
+                    <span class="text-xs text-gray-400 mr-2">POT:</span>
+                    <span class="text-gold font-bold" id="game-pot">0</span>
+                </div>
+                <div class="glass px-3 py-1.5 rounded-full">
+                    <span class="text-xs text-white" id="game-status">Waiting...</span>
+                </div>
+                <button onclick="exitGame()" class="glass w-8 h-8 rounded-full flex items-center justify-center text-red-400">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+                </button>
+            </div>
+
+            <!-- Player Cards -->
+            <div class="absolute top-14 left-0 right-0 flex justify-around px-2 z-10" id="game-players">
+                <!-- Injected via JS -->
+            </div>
+
+            <!-- Matka Result Display -->
+            <div id="matka-result" class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden z-10">
+                <div class="glass px-6 py-3 rounded-xl text-center glow-gold">
+                    <p class="text-xs text-gray-400">MATKA DICE</p>
+                    <p class="text-4xl font-royal text-gold" id="matka-number">-</p>
+                </div>
+            </div>
+
+            <!-- Flick Zone & Controls -->
+            <div id="flick-ui" class="absolute bottom-0 left-0 right-0 p-4 z-10 hidden">
+                <div class="flick-zone h-32 rounded-xl flex flex-col items-center justify-center relative overflow-hidden">
+                    <p class="text-gold font-semibold mb-2">HOLD & FLICK</p>
+                    <div class="w-3/4 h-2 bg-gray-800 rounded-full overflow-hidden">
+                        <div id="power-bar" class="power-bar-fill h-full w-0"></div>
+                    </div>
+                    <p class="text-xs text-gray-400 mt-2">Hold to charge power, release to roll</p>
+                </div>
+            </div>
+
+            <!-- Game Over Modal -->
+            <div id="game-over-modal" class="absolute inset-0 bg-black/80 flex items-center justify-center z-50 hidden">
+                <div class="glass p-6 rounded-2xl text-center w-4/5 max-w-xs">
+                    <div id="result-icon" class="text-6xl mb-3">🏆</div>
+                    <h3 id="result-title" class="text-2xl font-royal text-gold mb-2">Victory!</h3>
+                    <p id="result-desc" class="text-gray-300 mb-4">You won the pot!</p>
+                    <div class="flex space-x-2">
+                        <button onclick="playAgain()" class="flex-1 btn-primary py-2 rounded-lg">Play Again</button>
+                        <button onclick="exitGame()" class="flex-1 bg-gray-700 text-white py-2 rounded-lg">Lobby</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ==================== HELP & SUPPORT SCREEN ==================== -->
+        <div id="screen-help" class="screen p-4 pb-20">
+            <div class="flex items-center mb-6">
+                <button onclick="showScreen('dashboard')" class="text-gold mr-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h2 class="text-xl font-royal text-gold">Help & Support</h2>
+            </div>
+
+            <div class="glass p-4 rounded-xl mb-4">
+                <p class="text-xs text-gray-400 mb-1">For faster service, please have your User ID ready:</p>
+                <p class="text-gold font-mono font-bold" id="help-uid">UID: -</p>
+            </div>
+
+            <div class="space-y-3 mb-6">
+                <button class="w-full glass p-4 rounded-xl flex justify-between items-center text-left">
+                    <span class="font-semibold">📞 Call Support</span>
+                    <span class="text-gold">1800-XXX-XXXX</span>
+                </button>
+                <button class="w-full glass p-4 rounded-xl flex justify-between items-center text-left">
+                    <span class="font-semibold">✉️ Email Us</span>
+                    <span class="text-gold">support@royal.com</span>
+                </button>
+                <button class="w-full btn-primary p-4 rounded-xl flex justify-center items-center space-x-2">
+                    <span>💬</span>
+                    <span>24/7 Live Agent Chat</span>
+                </button>
+            </div>
+
+            <h3 class="text-lg font-bold mb-3">FAQs</h3>
+            <div class="space-y-2" id="faq-list">
+                <!-- Injected via JS -->
+            </div>
+        </div>
+
+        <!-- ==================== SETTINGS SCREEN ==================== -->
+        <div id="screen-settings" class="screen p-4 pb-20">
+            <div class="flex items-center mb-6">
+                <button onclick="showScreen('dashboard')" class="text-gold mr-3"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg></button>
+                <h2 class="text-xl font-royal text-gold">Settings</h2>
+            </div>
+
+            <div class="space-y-3">
+                <div class="glass p-4 rounded-xl flex justify-between items-center">
+                    <span>Sound Effects</span>
+                    <div class="w-10 h-6 bg-gold rounded-full relative cursor-pointer">
+                        <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                    </div>
+                </div>
+                <div class="glass p-4 rounded-xl flex justify-between items-center">
+                    <span>Animations</span>
+                    <div class="w-10 h-6 bg-gold rounded-full relative cursor-pointer">
+                        <div class="w-5 h-5 bg-white rounded-full absolute right-0.5 top-0.5"></div>
+                    </div>
+                </div>
+                
+                <div class="border-t border-gray-800 my-4"></div>
+                <h3 class="text-sm font-bold text-red-400 uppercase tracking-wider">Responsible Gaming</h3>
+                
+                <div class="glass p-4 rounded-xl flex justify-between items-center">
+                    <span>Deposit Limits</span>
+                    <span class="text-gold">₹10,000 / day</span>
+                </div>
+                <button class="w-full glass p-4 rounded-xl text-left text-yellow-400">
+                    Set Cool-off Period
+                </button>
+                <button class="w-full glass p-4 rounded-xl text-left text-red-400">
+                    Self-Exclusion
+                </button>
+
+                <div class="border-t border-gray-800 my-4"></div>
+                <button onclick="logout()" class="w-full bg-red-900/30 border border-red-800 text-red-400 p-4 rounded-xl font-semibold">
+                    Logout
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        // ==================== APP STATE & CONFIG ====================
+        const AppState = {
+            user: {
+                uid: 'RM' + Math.floor(Math.random() * 900000 + 100000),
+                name: 'Player',
+                phone: '',
+                coins: 1000, // Starting demo coins
+                kyc: true
+            },
+            currentScreen: 'login',
+            game: {
+                entryFee: 0,
+                pot: 0,
+                matkaRoll: 0,
+                playerRoll: 0,
+                isActive: false,
+                bots: [
+                    { name: 'Raja_99', avatar: 'R', color: '#3b82f6' },
+                    { name: 'Sher_K', avatar: 'S', color: '#10b981' },
+                    { name: 'Vikram', avatar: 'V', color: '#f59e0b' }
+                ]
+            }
+        };
+
+        const TABLES = [
+            { fee: 100, label: 'Beginner', color: 'bg-blue-900/50 border-blue-800' },
+            { fee: 200, label: 'Silver', color: 'bg-gray-700/50 border-gray-600' },
+            { fee: 500, label: 'Gold', color: 'bg-yellow-900/50 border-yellow-800' },
+            { fee: 1000, label: 'Royal', color: 'bg-purple-900/50 border-purple-800' }
+        ];
+
+        const PACKAGES = [
+            { coins: 500, price: 500, bonus: 0 },
+            { coins: 1000, price: 1000, bonus: 50 },
+            { coins: 2000, price: 2000, bonus: 150 },
+            { coins: 5000, price: 5000, bonus: 500 }
+        ];
+
+        const FAQS = [
+            { q: "How do I withdraw my winnings?", a: "Go to Bank & Shop, click Withdraw, and link your UPI/Bank account. Funds arrive in 24 hours." },
+            { q: "Is this a game of skill or chance?", a: "Royal Matka is certified as a Game of Skill. Your flick technique determines the force and angle, giving you control over the outcome." },
+            { q: "What is the platform fee (Rake)?", a: "A standard 5% platform fee is deducted from the total pot before the winner is paid out." },
+            { q: "My KYC is pending, can I play?", a: "You can play in Guest/Practice mode. Real-money tables require completed KYC verification." }
+        ];
+
+        // ==================== UI & NAVIGATION ====================
+        function showScreen(screenId) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById(`screen-${screenId}`).classList.add('active');
+            AppState.currentScreen = screenId;
+            
+            if(screenId === 'dashboard') updateDashboard();
+            if(screenId === 'bank') updateBank();
+            if(screenId === 'help') updateHelp();
+            if(screenId === 'game') initGame();
+        }
+
+        function updateDashboard() {
+            document.getElementById('dash-coins').innerText = AppState.user.coins;
+            document.getElementById('dash-name').innerText = AppState.user.name;
+            document.getElementById('dash-avatar').innerText = AppState.user.name.charAt(0).toUpperCase();
+            
+            const lobby = document.getElementById('lobby-tables');
+            lobby.innerHTML = TABLES.map(t => `
+                <div onclick="joinTable(${t.fee})" class="${t.color} border p-4 rounded-xl cursor-pointer hover:scale-105 transition-transform">
+                    <p class="text-xs text-gray-400">${t.label}</p>
+                    <p class="text-xl font-bold text-white mt-1">🪙 ${t.fee}</p>
+                    <p class="text-xs text-gold mt-2">Entry Fee</p>
+                </div>
+            `).join('');
+        }
+
+        function updateBank() {
+            document.getElementById('bank-coins').innerText = AppState.user.coins;
+            const grid = document.getElementById('coin-packages');
+            grid.innerHTML = PACKAGES.map(p => `
+                <div onclick="buyCoins(${p.coins}, ${p.price})" class="glass p-4 rounded-xl border border-gray-700 hover:border-gold cursor-pointer text-center">
+                    <p class="text-2xl font-bold text-gold">🪙 ${p.coins}</p>
+                    ${p.bonus > 0 ? `<p class="text-xs text-green-400">+${p.bonus} Bonus</p>` : '<p class="text-xs text-gray-500 h-4"></p>'}
+                    <button class="mt-3 w-full bg-gold text-black py-1.5 rounded-lg text-sm font-bold">₹${p.price}</button>
+                </div>
+            `).join('');
+        }
+
+        function updateHelp() {
+            document.getElementById('help-uid').innerText = `UID: ${AppState.user.uid}`;
+            const list = document.getElementById('faq-list');
+            list.innerHTML = FAQS.map(f => `
+                <details class="glass rounded-xl overflow-hidden">
+                    <summary class="p-4 cursor-pointer font-semibold text-white hover:text-gold">${f.q}</summary>
+                    <div class="px-4 pb-4 text-sm text-gray-400">${f.a}</div>
+                </details>
+            `).join('');
+        }
+
+        // ==================== AUTH MOCK ====================
+        function sendOTP() {
+            const phone = document.getElementById('input-phone').value;
+            if(phone.length !== 10) return alert('Enter valid 10-digit number');
+            AppState.user.phone = phone;
+            document.getElementById('display-phone').innerText = phone;
+            document.getElementById('login-step1').classList.add('hidden');
+            document.getElementById('login-step2').classList.remove('hidden');
+            // Mock OTP is 123456
+            alert('Demo OTP is: 123456'); 
+        }
+
+        function verifyOTP() {
+            const otp = document.getElementById('input-otp').value;
+            if(otp === '123456') {
+                AppState.user.name = 'Player_' + AppState.user.phone.slice(-4);
+                showScreen('dashboard');
+            } else {
+                alert('Invalid OTP. Try 123456');
+            }
+        }
+
+        function logout() {
+            showScreen('login');
+            document.getElementById('input-phone').value = '';
+            document.getElementById('login-step2').classList.add('hidden');
+            document.getElementById('login-step1').classList.remove('hidden');
+        }
+
+        // ==================== BANK MOCK ====================
+        function buyCoins(coins, price) {
+            if(confirm(`Confirm purchase of ${coins} coins for ₹${price}?`)) {
+                AppState.user.coins += coins;
+                alert('Payment Successful! Coins added.');
+                updateBank();
+            }
+        }
+
+        // ==================== GAME ENGINE (THREE.JS) ====================
+        let scene, camera, renderer, matkaDie, playerDie, table, pot;
+        let animationId;
+        let isCharging = false, chargeStart = 0, chargePower = 0;
+
+        function joinTable(fee) {
+            if(AppState.user.coins < fee) {
+                alert('Insufficient coins. Please buy more.');
+                showScreen('bank');
+                return;
+            }
+            AppState.game.entryFee = fee;
+            AppState.game.pot = (fee * 4) * 0.95; // 5% rake
+            AppState.user.coins -= fee;
+            showScreen('game');
+        }
+
+        function initGame() {
+            document.getElementById('game-pot').innerText = Math.floor(AppState.game.pot);
+            document.getElementById('game-status').innerText = 'Match Starting...';
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('matka-result').classList.add('hidden');
+            document.getElementById('flick-ui').classList.add('hidden');
+            
+            // Render player cards
+            const playersDiv = document.getElementById('game-players');
+            const allPlayers = [{ name: 'You', avatar: 'Y', color: '#ef4444' }, ...AppState.game.bots];
+            playersDiv.innerHTML = allPlayers.map(p => `
+                <div class="glass px-2 py-1 rounded-lg flex items-center space-x-1">
+                    <div class="w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:${p.color}">${p.avatar}</div>
+                    <span class="text-xs font-semibold">${p.name}</span>
+                </div>
+            `).join('');
+
+            setupThreeJS();
+            startMatch();
+        }
+
+        function setupThreeJS() {
+            const canvas = document.getElementById('game-canvas');
+            if(renderer) {
+                // Cleanup previous
+                cancelAnimationFrame(animationId);
+                renderer.dispose();
+            }
+
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a0c);
+            scene.fog = new THREE.Fog(0x0a0a0c, 10, 20);
+
+            camera = new THREE.PerspectiveCamera(45, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+            camera.position.set(0, 8, 8);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.shadowMap.enabled = true;
+
+            // Lights
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.4);
+            scene.add(ambientLight);
+
+            const spotLight = new THREE.SpotLight(0xffd700, 1.5, 20, Math.PI / 4, 0.5);
+            spotLight.position.set(0, 10, 0);
+            spotLight.castShadow = true;
+            scene.add(spotLight);
+
+            const pointLight = new THREE.PointLight(0xffffff, 0.5);
+            pointLight.position.set(5, 5, 5);
+            scene.add(pointLight);
+
+            // Table (Octagon)
+            const tableGeo = new THREE.CylinderGeometry(5, 5, 0.5, 8);
+            const tableMat = new THREE.MeshStandardMaterial({ color: 0x0f5132, roughness: 0.8 });
+            table = new THREE.Mesh(tableGeo, tableMat);
+            table.receiveShadow = true;
+            table.position.y = -0.25;
+            scene.add(table);
+
+            // Table Border
+            const borderGeo = new THREE.TorusGeometry(5.1, 0.2, 4, 8);
+            const borderMat = new THREE.MeshStandardMaterial({ color: 0x8B4513, roughness: 0.4 });
+            const border = new THREE.Mesh(borderGeo, borderMat);
+            border.rotation.x = Math.PI / 2;
+            border.position.y = -0.1;
+            scene.add(border);
+
+            // Matka Pot (Center)
+            const potGroup = new THREE.Group();
+            const potBody = new THREE.Mesh(
+                new THREE.SphereGeometry(0.6, 16, 16, 0, Math.PI * 2, 0, Math.PI / 1.5),
+                new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.8, roughness: 0.2 })
+            );
+            potBody.position.y = 0.2;
+            potGroup.add(potBody);
+            
+            const potRim = new THREE.Mesh(
+                new THREE.TorusGeometry(0.4, 0.05, 8, 16),
+                new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 0.9, roughness: 0.1 })
+            );
+            potRim.rotation.x = Math.PI / 2;
+            potRim.position.y = 0.7;
+            potGroup.add(potRim);
+            
+            pot = potGroup;
+            scene.add(pot);
+
+            // Matka Die (Large, Golden)
+            matkaDie = createDie(0xFFD700, 0.6);
+            matkaDie.position.set(0, 2, 0);
+            scene.add(matkaDie);
+
+            // Player Die (Smaller, Red)
+            playerDie = createDie(0xef4444, 0.4);
+            playerDie.position.set(0, 2, 3);
+            playerDie.visible = false;
+            scene.add(playerDie);
+
+            // Flick Controls
+            canvas.onmousedown = canvas.ontouchstart = (e) => { e.preventDefault(); startCharge(); };
+            canvas.onmouseup = canvas.ontouchend = (e) => { e.preventDefault(); releaseFlick(); };
+
+            animate();
+        }
+
+        function createDie(color, size) {
+            const geo = new THREE.BoxGeometry(size, size, size);
+            // Simple material, in production you'd use a texture atlas for the dots
+            const mat = new THREE.MeshStandardMaterial({ 
+                color: color, 
+                metalness: 0.3, 
+                roughness: 0.4 
+            });
+            const die = new THREE.Mesh(geo, mat);
+            die.castShadow = true;
+            die.userData = { velocity: new THREE.Vector3(), rotation: new THREE.Vector3(), isRolling: false };
+            return die;
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            
+            // Physics simulation for dice
+            [matkaDie, playerDie].forEach(die => {
+                if(die.userData.isRolling) {
+                    die.position.add(die.userData.velocity);
+                    die.rotation.x += die.userData.rotation.x;
+                    die.rotation.y += die.userData.rotation.y;
+                    die.rotation.z += die.userData.rotation.z;
+
+                    // Gravity
+                    die.userData.velocity.y -= 0.01;
+
+                    // Floor collision
+                    if(die.position.y < size/2) { // size is approx
+                        die.position.y = size/2;
+                        die.userData.velocity.y *= -0.5; // Bounce
+                        die.userData.velocity.x *= 0.8; // Friction
+                        die.userData.velocity.z *= 0.8;
+                        die.userData.rotation.multiplyScalar(0.9);
+                    }
+
+                    // Table bounds (radius 5)
+                    const dist = Math.sqrt(die.position.x**2 + die.position.z**2);
+                    if(dist > 4.5) {
+                        die.userData.velocity.x *= -0.8;
+                        die.userData.velocity.z *= -0.8;
+                        die.position.x = Math.sign(die.position.x) * 4.4;
+                        die.position.z = Math.sign(die.position.z) * 4.4;
+                    }
+
+                    // Stop condition
+                    if(die.userData.velocity.length() < 0.01 && die.position.y <= size/2 + 0.01) {
+                        die.userData.isRolling = false;
+                        die.userData.velocity.set(0,0,0);
+                        die.userData.rotation.set(0,0,0);
+                        onDieStopped(die);
+                    }
+                }
+            });
+
+            // Power bar update
+            if(isCharging) {
+                chargePower = Math.min(100, (Date.now() - chargeStart) / 20);
+                document.getElementById('power-bar').style.width = chargePower + '%';
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        function startMatch() {
+            setTimeout(() => {
+                document.getElementById('game-status').innerText = 'Matka Rolling...';
+                rollDie(matkaDie, true);
+            }, 1000);
+        }
+
+        function rollDie(die, isMatka) {
+            die.visible = true;
+            die.position.set(
+                (Math.random() - 0.5) * 2, 
+                3, 
+                (Math.random() - 0.5) * 2 + (isMatka ? 0 : 3)
+            );
+            
+            // Target rotation to land on specific face (simplified simulation)
+            // In a real app, physics engine determines the face. Here we fake the result.
+            const targetFace = Math.floor(Math.random() * 6) + 1;
+            if(isMatka) AppState.game.matkaRoll = targetFace;
+            else AppState.game.playerRoll = targetFace;
+
+            die.userData.velocity.set(
+                (Math.random() - 0.5) * 0.2,
+                0.1,
+                (Math.random() - 0.5) * 0.2
+            );
+            die.userData.rotation.set(
+                (Math.random() - 0.5) * 0.3,
+                (Math.random() - 0.5) * 0.3,
+                (Math.random() - 0.5) * 0.3
+            );
+            die.userData.isRolling = true;
+        }
+
+        function onDieStopped(die) {
+            if(die === matkaDie) {
+                document.getElementById('matka-result').classList.remove('hidden');
+                document.getElementById('matka-number').innerText = AppState.game.matkaRoll;
+                document.getElementById('game-status').innerText = 'Your Turn!';
+                document.getElementById('flick-ui').classList.remove('hidden');
+            } else if(die === playerDie) {
+                document.getElementById('flick-ui').classList.add('hidden');
+                document.getElementById('game-status').innerText = 'Calculating...';
+                setTimeout(resolveGame, 1500);
+            }
+        }
+
+        function startCharge() {
+            if(!AppState.game.isActive || playerDie.userData.isRolling) return;
+            isCharging = true;
+            chargeStart = Date.now();
+        }
+
+        function releaseFlick() {
+            if(!isCharging) return;
+            isCharging = false;
+            document.getElementById('power-bar').style.width = '0%';
+            
+            // Skill element: Power affects the roll. 
+            // For this prototype, we just apply the power to the physics.
+            const power = chargePower / 100;
+            playerDie.userData.velocity.set(
+                (Math.random() - 0.5) * 0.3 * power,
+                0.15 + (power * 0.1),
+                -0.2 - (power * 0.2)
+            );
+            playerDie.userData.rotation.set(
+                (Math.random() - 0.5) * 0.4 * power,
+                (Math.random() - 0.5) * 0.4 * power,
+                (Math.random() - 0.5) * 0.4 * power
+            );
+            playerDie.userData.isRolling = true;
+            AppState.game.isActive = false; // Prevent double flick
+        }
+
+        function resolveGame() {
+            // Bots roll (simulated)
+            let botWins = false;
+            AppState.game.bots.forEach(bot => {
+                if(Math.random() < 0.16) botWins = true; // ~1/6 chance
+            });
+
+            const playerWon = (AppState.game.playerRoll === AppState.game.matkaRoll);
+
+            if(playerWon && !botWins) {
+                // Player wins
+                AppState.user.coins += Math.floor(AppState.game.pot);
+                showResult(true, `You matched the Matka (${AppState.game.matkaRoll})!`, `+${Math.floor(AppState.game.pot)} Coins`);
+            } else {
+                // Player loses
+                showResult(false, botWins ? 'A bot matched the Matka.' : 'No one matched the Matka.', 'Better luck next time!');
+            }
+        }
+
+        function showResult(won, title, desc) {
+            const modal = document.getElementById('game-over-modal');
+            document.getElementById('result-icon').innerText = won ? '🏆' : '😔';
+            document.getElementById('result-title').innerText = won ? 'Victory!' : 'Defeat';
+            document.getElementById('result-title').className = `text-2xl font-royal ${won ? 'text-gold' : 'text-red-400'} mb-2`;
+            document.getElementById('result-desc').innerHTML = `${title}<br><span class="text-sm ${won ? 'text-green-400' : 'text-gray-400'}">${desc}</span>`;
+            modal.classList.remove('hidden');
+        }
+
+        function playAgain() {
+            document.getElementById('game-over-modal').classList.add('hidden');
+            AppState.game.isActive = true;
+            startMatch();
+        }
+
+        function exitGame() {
+            cancelAnimationFrame(animationId);
+            showScreen('dashboard');
+        }
+
+        // ==================== INIT ====================
+        // Pre-load dashboard data
+        updateDashboard();
+
+    </script>
+</body>
+</html>
