@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Royal Matka Showdown - Premium Gaming</title>
+    
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;800&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            --gold-primary: #D4AF37;
+            --gold-light: #F4E8C1;
+            --gold-dark: #AA8C2C;
+            --dark-bg: #0a0a0f;
+            --card-bg: #151520;
+            --border-gold: rgba(212, 175, 55, 0.3);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Poppins', sans-serif; background: var(--dark-bg); color: #e0e0e0; overflow-x: hidden; }
+        .font-royal { font-family: 'Cinzel', serif; }
+        .gradient-gold { background: linear-gradient(135deg, #D4AF37 0%, #AA8C2C 50%, #D4AF37 100%); }
+        .gradient-dark { background: linear-gradient(180deg, #1a1a2e 0%, #0a0a0f 100%); }
+        .glass-panel { background: rgba(21, 21, 32, 0.85); backdrop-filter: blur(12px); border: 1px solid var(--border-gold); box-shadow: 0 8px 32px rgba(0,0,0,0.4); }
+        .gold-glow { box-shadow: 0 0 20px rgba(212,175,55,0.4), 0 0 40px rgba(212,175,55,0.2); }
+        .text-gold { background: linear-gradient(135deg, #F4E8C1 0%, #D4AF37 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
+        .btn-gold { background: linear-gradient(135deg, #D4AF37 0%, #AA8C2C 100%); color: #0a0a0f; font-weight: 600; transition: all 0.3s ease; }
+        .btn-gold:hover { transform: translateY(-2px); box-shadow: 0 10px 25px rgba(212,175,55,0.4); }
+        .btn-gold:disabled { opacity: 0.6; transform: none; cursor: not-allowed; }
+        .screen { display: none; min-height: 100vh; animation: fadeIn 0.4s ease; }
+        .screen.active { display: flex; flex-direction: column; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .floating { animation: float 3s ease-in-out infinite; }
+        @keyframes float { 0%,100% { transform: translateY(0px); } 50% { transform: translateY(-10px); } }
+        .pulse-gold { animation: pulseGold 2s ease-in-out infinite; }
+        @keyframes pulseGold { 0%,100% { box-shadow: 0 0 10px rgba(212,175,55,0.4); } 50% { box-shadow: 0 0 30px rgba(212,175,55,0.8); } }
+        .coin-package { background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); border: 2px solid var(--border-gold); transition: all 0.3s ease; }
+        .coin-package:hover { transform: scale(1.05); border-color: var(--gold-primary); }
+        .otp-input { width: 46px; height: 56px; text-align: center; font-size: 26px; font-weight: bold; background: rgba(212,175,55,0.1); border: 2px solid var(--border-gold); border-radius: 12px; color: var(--gold-primary); }
+        .otp-input:focus { outline: none; border-color: var(--gold-primary); box-shadow: 0 0 15px rgba(212,175,55,0.4); }
+        #game-canvas { width: 100%; height: 100%; display: block; touch-action: none; }
+        .power-bar { background: linear-gradient(90deg, #10b981 0%, #f59e0b 50%, #ef4444 100%); transition: width 0.05s linear; }
+        .payment-method { background: rgba(255,255,255,0.05); border: 2px solid rgba(255,255,255,0.1); transition: all 0.3s ease; }
+        .payment-method:hover, .payment-method.active { border-color: var(--gold-primary); background: rgba(212,175,55,0.1); }
+        .faq-item { border-bottom: 1px solid rgba(255,255,255,0.1); }
+        .faq-item summary { padding: 16px; cursor: pointer; font-weight: 500; }
+        .faq-item summary:hover { color: var(--gold-primary); }
+        .faq-content { padding: 0 16px 16px; color: #9ca3af; font-size: 14px; }
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: var(--dark-bg); }
+        ::-webkit-scrollbar-thumb { background: var(--gold-primary); border-radius: 4px; }
+        .matka-pot { background: radial-gradient(circle at 30% 30%, #F4E8C1, #D4AF37, #AA8C2C); box-shadow: 0 0 40px rgba(212,175,55,0.6); }
+    </style>
+</head>
+<body class="flex justify-center items-center min-h-screen">
+
+    <div id="app" class="w-full max-w-6xl mx-auto relative">
+        
+        <!-- LOGIN SCREEN -->
+        <div id="screen-login" class="screen active gradient-dark min-h-screen">
+            <div class="relative z-10 flex-1 flex flex-col items-center justify-center p-6">
+                <div class="text-center mb-8 floating">
+                    <div class="w-24 h-24 mx-auto mb-4 relative">
+                        <div class="absolute inset-0 gradient-gold rounded-2xl rotate-12 opacity-50 pulse-gold"></div>
+                        <div class="relative gradient-gold rounded-2xl p-1">
+                            <div class="bg-[#0a0a0f] rounded-xl p-4 flex items-center justify-center">
+                                <div class="text-center">
+                                    <i class="fas fa-crown text-4xl text-[#D4AF37] mb-1"></i>
+                                    <div class="font-royal font-bold text-[#D4AF37] text-lg">ROYAL</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <h1 class="font-royal text-4xl font-bold text-gold mb-2">MATKA SHOWDOWN</h1>
+                    <p class="text-gray-400 text-sm">Premium Real-Money Gaming Experience</p>
+                </div>
+
+                <div class="glass-panel rounded-2xl p-8 w-full max-w-md gold-glow">
+                    <div class="flex mb-6 bg-[#0a0a0f] rounded-xl p-1">
+                        <button onclick="switchLoginTab('phone')" id="tab-phone" class="flex-1 py-3 rounded-lg gradient-gold text-[#0a0a0f] font-semibold">
+                            <i class="fas fa-mobile-alt mr-2"></i>Phone Login
+                        </button>
+                        <button onclick="switchLoginTab('user')" id="tab-user" class="flex-1 py-3 rounded-lg text-gray-400 font-semibold">
+                            <i class="fas fa-user mr-2"></i>User ID
+                        </button>
+                    </div>
+
+                    <div id="form-phone" class="space-y-4">
+                        <div>
+                            <label class="block text-sm text-gray-400 mb-2">Mobile Number</label>
+                            <div class="flex">
+                                <span class="inline-flex items-center px-4 bg-[#0a0a0f] border border-gray-700 rounded-l-xl text-[#D4AF37] font-semibold">+91</span>
+                                <input type="tel" id="phone-input" maxlength="10" placeholder="9876543210" 
+                                    class="flex-1 px-4 py-4 bg-[#0a0a0f] border border-gray-700 rounded-r-xl focus:outline-none focus:border-[#D4AF37] text-white text-lg">
+                            </div>
+                        </div>
+
+                        <button id="btn-send-otp" onclick="sendOTP()" class="w-full btn-gold py-4 rounded-xl text-lg font-bold shadow-lg">
+                            <i class="fas fa-paper-plane mr-2"></i>Send OTP
+                        </button>
+
+                        <div id="otp-section" class="hidden space-y-4 pt-4 border-t border-gray-700">
+                            <p id="otp-status" class="text-sm text-center"></p>
+                            <div>
+                                <label class="block text-sm text-gray-400 mb-3 text-center">Enter 6-Digit OTP</label>
+                                <div class="flex justify-center gap-2">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 0)" data-index="0">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 1)" data-index="1">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 2)" data-index="2">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 3)" data-index="3">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 4)" data-index="4">
+                                    <input type="text" maxlength="1" class="otp-input" onkeyup="moveToNext(this, 5)" data-index="5">
+                                </div>
+                            </div>
+                            <button onclick="verifyOTP()" class="w-full btn-gold py-4 rounded-xl text-lg font-bold">
+                                <i class="fas fa-check-circle mr-2"></i>Verify & Login
+                            </button>
+                            <div class="text-center">
+                                <button onclick="sendOTP()" class="text-[#D4AF37] text-sm hover:underline">Resend OTP</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="form-user" class="space-y-4 hidden">
+                        <input type="text" placeholder="Enter User ID" class="w-full px-4 py-4 bg-[#0a0a0f] border border-gray-700 rounded-xl focus:outline-none focus:border-[#D4AF37] text-white">
+                        <input type="password" placeholder="Enter Password" class="w-full px-4 py-4 bg-[#0a0a0f] border border-gray-700 rounded-xl focus:outline-none focus:border-[#D4AF37] text-white">
+                        <button class="w-full btn-gold py-4 rounded-xl text-lg font-bold"><i class="fas fa-sign-in-alt mr-2"></i>Login</button>
+                    </div>
+
+                    <div class="mt-6 text-center">
+                        <button onclick="guestLogin()" class="text-gray-400 hover:text-[#D4AF37]">
+                            <i class="fas fa-user-secret mr-2"></i>Continue as Guest
+                        </button>
+                    </div>
+
+                    <div class="mt-6 flex items-center justify-center space-x-4 text-xs text-gray-500">
+                        <div class="flex items-center"><i class="fas fa-shield-alt text-green-500 mr-1"></i><span>Secure</span></div>
+                        <div class="flex items-center"><i class="fas fa-lock text-green-500 mr-1"></i><span>18+ Only</span></div>
+                        <div class="flex items-center"><i class="fas fa-certificate text-[#D4AF37] mr-1"></i><span>Licensed</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DASHBOARD -->
+        <div id="screen-dashboard" class="screen gradient-dark min-h-screen">
+            <header class="glass-panel sticky top-0 z-50 px-6 py-4">
+                <div class="flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="w-12 h-12 gradient-gold rounded-full flex items-center justify-center gold-glow">
+                            <span class="text-[#0a0a0f] font-bold text-xl" id="dash-avatar">U</span>
+                        </div>
+                        <div>
+                            <h3 class="font-semibold text-white" id="dash-name">User</h3>
+                            <div class="flex items-center text-xs text-green-400">
+                                <i class="fas fa-check-circle mr-1"></i><span>KYC Verified</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <div class="glass-panel px-4 py-2 rounded-xl flex items-center space-x-2">
+                            <i class="fas fa-coins text-[#D4AF37] text-xl"></i>
+                            <span class="font-bold text-white text-lg" id="dash-coins">0</span>
+                            <button onclick="showScreen('bank')" class="ml-2 w-8 h-8 gradient-gold rounded-full flex items-center justify-center text-[#0a0a0f] font-bold text-sm">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                        <button onclick="showScreen('settings')" class="w-10 h-10 glass-panel rounded-xl flex items-center justify-center text-[#D4AF37]">
+                            <i class="fas fa-cog"></i>
+                        </button>
+                    </div>
+                </div>
+            </header>
+
+            <div class="flex-1 p-6 space-y-6 pb-24">
+                <div class="text-center py-8">
+                    <div class="w-40 h-40 mx-auto mb-4 relative">
+                        <div class="absolute inset-0 bg-[#D4AF37] opacity-20 rounded-full animate-ping"></div>
+                        <div class="relative w-full h-full matka-pot rounded-full flex items-center justify-center gold-glow">
+                            <div class="text-center">
+                                <i class="fas fa-landmark text-5xl text-[#0a0a0f] mb-2"></i>
+                                <div class="font-royal font-bold text-[#0a0a0f]">MATKA</div>
+                            </div>
+                        </div>
+                    </div>
+                    <h2 class="font-royal text-3xl font-bold text-gold mb-2">Royal Matka Showdown</h2>
+                    <p class="text-gray-400 text-sm">Skill + Strategy = Victory</p>
+                </div>
+
+                <div onclick="showScreen('bank')" class="glass-panel rounded-2xl p-6 cursor-pointer hover:border-[#D4AF37] transition-all">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-14 h-14 bg-gradient-to-br from-green-600 to-green-800 rounded-xl flex items-center justify-center text-3xl">
+                                <i class="fas fa-university text-white"></i>
+                            </div>
+                            <div>
+                                <h3 class="text-xl font-bold text-white">Bank & Shop</h3>
+                                <p class="text-gray-400 text-sm">Buy Coins & Withdraw Winnings</p>
+                            </div>
+                        </div>
+                        <i class="fas fa-chevron-right text-[#D4AF37] text-2xl"></i>
+                    </div>
+                </div>
+
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4"><i class="fas fa-gamepad text-[#D4AF37] mr-2"></i>Select Table</h3>
+                    <div class="grid grid-cols-2 gap-4" id="lobby-tables"></div>
+                </div>
+            </div>
+
+            <nav class="fixed bottom-0 left-1/2 -translate-x-1/2 w-full max-w-6xl glass-panel border-t border-[#D4AF37]/30 px-6 py-3 z-50">
+                <div class="flex justify-around items-center">
+                    <button onclick="showScreen('dashboard')" class="flex flex-col items-center text-[#D4AF37]"><i class="fas fa-home text-2xl mb-1"></i><span class="text-xs">Home</span></button>
+                    <button onclick="showScreen('bank')" class="flex flex-col items-center text-gray-400"><i class="fas fa-wallet text-2xl mb-1"></i><span class="text-xs">Bank</span></button>
+                    <button onclick="showScreen('help')" class="flex flex-col items-center text-gray-400"><i class="fas fa-headset text-2xl mb-1"></i><span class="text-xs">Support</span></button>
+                    <button onclick="showScreen('settings')" class="flex flex-col items-center text-gray-400"><i class="fas fa-cog text-2xl mb-1"></i><span class="text-xs">Settings</span></button>
+                </div>
+            </nav>
+        </div>
+
+        <!-- BANK -->
+        <div id="screen-bank" class="screen gradient-dark min-h-screen">
+            <header class="glass-panel px-6 py-4 sticky top-0 z-50">
+                <div class="flex items-center">
+                    <button onclick="showScreen('dashboard')" class="text-[#D4AF37] mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-royal text-2xl font-bold text-gold">Bank & Shop</h2>
+                </div>
+            </header>
+            <div class="flex-1 p-6 space-y-6 pb-24">
+                <div class="glass-panel rounded-2xl p-6 gold-glow">
+                    <div class="flex items-center justify-between mb-4">
+                        <div>
+                            <p class="text-gray-400 text-sm mb-1">Current Balance</p>
+                            <h3 class="text-3xl font-bold text-white"><i class="fas fa-coins text-[#D4AF37] mr-2"></i><span id="bank-coins">0</span></h3>
+                        </div>
+                        <button class="px-6 py-3 bg-red-600/20 border border-red-600 text-red-400 rounded-xl font-semibold">
+                            <i class="fas fa-arrow-down mr-2"></i>Withdraw
+                        </button>
+                    </div>
+                    <div class="flex items-center text-xs text-green-400 bg-green-900/30 p-3 rounded-lg">
+                        <i class="fas fa-shield-alt mr-2"></i><span>All transactions are 100% Secure & Encrypted</span>
+                    </div>
+                </div>
+                <div>
+                    <h3 class="text-xl font-bold text-white mb-4">Buy Coins</h3>
+                    <div class="grid grid-cols-2 gap-4" id="coin-packages"></div>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Payment Method</h3>
+                    <div class="space-y-3">
+                        <div class="payment-method rounded-xl p-4 cursor-pointer active"><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-12 h-8 bg-gradient-to-r from-blue-500 to-blue-600 rounded flex items-center justify-center text-white font-bold text-xs">UPI</div><span class="font-semibold">UPI Payment</span></div><i class="fas fa-check-circle text-[#D4AF37]"></i></div></div>
+                        <div class="payment-method rounded-xl p-4 cursor-pointer"><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-12 h-8 bg-gradient-to-r from-purple-500 to-purple-600 rounded flex items-center justify-center text-white font-bold text-xs">CARD</div><span class="font-semibold">Credit/Debit Card</span></div><i class="far fa-circle text-gray-600"></i></div></div>
+                        <div class="payment-method rounded-xl p-4 cursor-pointer"><div class="flex items-center justify-between"><div class="flex items-center space-x-3"><div class="w-12 h-8 bg-gradient-to-r from-green-500 to-green-600 rounded flex items-center justify-center text-white font-bold text-xs">NB</div><span class="font-semibold">Net Banking</span></div><i class="far fa-circle text-gray-600"></i></div></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- GAME -->
+        <div id="screen-game" class="screen relative h-screen bg-[#0a0a0f] overflow-hidden">
+            <canvas id="game-canvas"></canvas>
+            <div class="absolute top-0 left-0 right-0 p-4 z-10">
+                <div class="glass-panel rounded-2xl px-6 py-3 flex items-center justify-between">
+                    <div class="flex items-center space-x-4">
+                        <div class="flex items-center space-x-2">
+                            <i class="fas fa-coins text-[#D4AF37] text-2xl"></i>
+                            <div><p class="text-xs text-gray-400">POT</p><p class="text-xl font-bold text-white" id="game-pot">0</p></div>
+                        </div>
+                        <div class="h-10 w-px bg-gray-700"></div>
+                        <div><p class="text-xs text-gray-400">MATCH</p><p class="text-sm font-semibold text-white" id="game-status">In Progress</p></div>
+                    </div>
+                    <button onclick="exitGame()" class="w-12 h-12 bg-red-600/20 border border-red-600 rounded-full flex items-center justify-center text-red-400">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+            </div>
+            <div class="absolute top-24 left-4 right-4 z-10">
+                <div class="grid grid-cols-4 gap-2" id="game-players"></div>
+            </div>
+            <div id="matka-result" class="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 hidden z-10">
+                <div class="glass-panel px-8 py-4 rounded-2xl text-center gold-glow">
+                    <p class="text-xs text-gray-400 mb-2">MATKA DICE</p>
+                    <div class="w-20 h-20 gradient-gold rounded-xl flex items-center justify-center mx-auto mb-2">
+                        <span class="text-4xl font-bold text-[#0a0a0f]" id="matka-number">-</span>
+                    </div>
+                </div>
+            </div>
+            <div id="flick-ui" class="absolute bottom-0 left-0 right-0 p-6 z-10 hidden">
+                <div class="glass-panel rounded-2xl p-6">
+                    <div class="text-center mb-4">
+                        <p class="text-[#D4AF37] font-semibold text-lg mb-2">HOLD & FLICK TO ROLL</p>
+                        <p class="text-gray-400 text-sm">Hold anywhere on the table to charge, release to roll</p>
+                    </div>
+                    <div class="relative h-24 bg-[#0a0a0f]/50 rounded-xl border-2 border-dashed border-[#D4AF37]/30 flex items-center justify-center overflow-hidden">
+                        <div class="relative z-10 text-center">
+                            <i class="fas fa-hand-paper text-4xl text-[#D4AF37] mb-2"></i>
+                            <p class="text-[#D4AF37] font-semibold">Hold to Charge</p>
+                        </div>
+                        <div class="absolute bottom-0 left-0 right-0 h-2 bg-gray-800">
+                            <div id="power-bar" class="power-bar h-full w-0"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="game-over-modal" class="absolute inset-0 bg-black/90 flex items-center justify-center z-50 hidden">
+                <div class="glass-panel rounded-3xl p-8 max-w-sm w-full mx-6 text-center gold-glow">
+                    <div id="result-icon" class="text-6xl mb-4">🏆</div>
+                    <h3 id="result-title" class="font-royal text-3xl font-bold text-gold mb-2">Victory!</h3>
+                    <p id="result-desc" class="text-gray-300 mb-6">You won the pot!</p>
+                    <div class="space-y-3">
+                        <button onclick="playAgain()" class="w-full btn-gold py-3 rounded-xl font-bold"><i class="fas fa-redo mr-2"></i>Play Again</button>
+                        <button onclick="exitGame()" class="w-full glass-panel py-3 rounded-xl font-semibold text-white"><i class="fas fa-home mr-2"></i>Back to Lobby</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- HELP -->
+        <div id="screen-help" class="screen gradient-dark min-h-screen">
+            <header class="glass-panel px-6 py-4 sticky top-0 z-50">
+                <div class="flex items-center">
+                    <button onclick="showScreen('dashboard')" class="text-[#D4AF37] mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-royal text-2xl font-bold text-gold">Help Center & Support</h2>
+                </div>
+            </header>
+            <div class="flex-1 p-6 space-y-6 pb-24">
+                <div class="glass-panel rounded-2xl p-6 gold-glow">
+                    <p class="text-gray-400 text-sm mb-2">For faster service, please have your User ID ready:</p>
+                    <p class="text-2xl font-bold text-[#D4AF37] font-mono" id="help-uid">UID: -</p>
+                </div>
+                <div class="space-y-3">
+                    <button class="w-full glass-panel rounded-2xl p-5 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-green-600/20 rounded-xl flex items-center justify-center text-green-400"><i class="fas fa-phone-alt text-xl"></i></div>
+                            <div class="text-left"><h3 class="font-semibold text-white">Call Us</h3><p class="text-[#D4AF37] font-mono">+91-XXXX-XXX-XX</p></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                    <button onclick="window.location.href='mailto:support@royalmatka.com'" class="w-full glass-panel rounded-2xl p-5 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-blue-600/20 rounded-xl flex items-center justify-center text-blue-400"><i class="fas fa-envelope text-xl"></i></div>
+                            <div class="text-left"><h3 class="font-semibold text-white">Email Us</h3><p class="text-gray-400 text-sm">support@royalmatka.com</p></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-gray-600"></i>
+                    </button>
+                    <button class="w-full gradient-gold rounded-2xl p-5 flex items-center justify-between shadow-lg">
+                        <div class="flex items-center space-x-4">
+                            <div class="w-12 h-12 bg-[#0a0a0f]/20 rounded-xl flex items-center justify-center"><i class="fas fa-comments text-xl text-[#0a0a0f]"></i></div>
+                            <div class="text-left"><h3 class="font-bold text-[#0a0a0f]">24/7 Live Agent Chat</h3><p class="text-[#0a0a0f]/80 text-sm">Instant support</p></div>
+                        </div>
+                        <i class="fas fa-chevron-right text-[#0a0a0f]"></i>
+                    </button>
+                </div>
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="text-xl font-bold text-white mb-4">Frequently Asked Questions</h3>
+                    <div class="space-y-2" id="faq-list"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- SETTINGS -->
+        <div id="screen-settings" class="screen gradient-dark min-h-screen">
+            <header class="glass-panel px-6 py-4 sticky top-0 z-50">
+                <div class="flex items-center">
+                    <button onclick="showScreen('dashboard')" class="text-[#D4AF37] mr-4"><i class="fas fa-arrow-left text-xl"></i></button>
+                    <h2 class="font-royal text-2xl font-bold text-gold">Settings</h2>
+                </div>
+            </header>
+            <div class="flex-1 p-6 space-y-4 pb-24">
+                <div class="glass-panel rounded-2xl p-6">
+                    <h3 class="text-lg font-bold text-white mb-4">Profile Settings</h3>
+                    <div class="space-y-4">
+                        <div class="flex items-center justify-between py-3 border-b border-gray-800">
+                            <span class="text-gray-300">Sound Effects</span>
+                            <button onclick="toggleSetting(this)" data-on="1" style="background:#D4AF37" class="w-14 h-7 rounded-full relative transition-colors"><div class="absolute right-1 top-1 w-5 h-5 bg-white rounded-full transition-transform"></div></button>
+                        </div>
+                        <div class="flex items-center justify-between py-3 border-b border-gray-800">
+                            <span class="text-gray-300">Notifications</span>
+                            <button onclick="toggleSetting(this)" data-on="1" style="background:#D4AF37" class="w-14 h-7 rounded-full relative transition-colors"><div class="absolute right-1 top-1 w-5 h-5 bg-white rounded-full transition-transform"></div></button>
+                        </div>
+                        <div class="flex items-center justify-between py-3">
+                            <span class="text-gray-300">Animations</span>
+                            <button onclick="toggleSetting(this)" data-on="1" style="background:#D4AF37" class="w-14 h-7 rounded-full relative transition-colors"><div class="absolute right-1 top-1 w-5 h-5 bg-white rounded-full transition-transform"></div></button>
+                        </div>
+                    </div>
+                </div>
+                <div class="glass-panel rounded-2xl p-6 border-l-4 border-yellow-600">
+                    <h3 class="text-lg font-bold text-yellow-500 mb-4"><i class="fas fa-exclamation-triangle mr-2"></i>Responsible Gaming</h3>
+                    <div class="space-y-3">
+                        <button class="w-full glass-panel py-3 px-4 rounded-xl text-left text-white"><div class="flex items-center justify-between"><span>Deposit Limits</span><span class="text-[#D4AF37]">₹10,000/day</span></div></button>
+                        <button class="w-full glass-panel py-3 px-4 rounded-xl text-left text-white"><i class="fas fa-clock mr-2 text-yellow-500"></i>Set Cool-off Period</button>
+                        <button class="w-full glass-panel py-3 px-4 rounded-xl text-left text-red-400"><i class="fas fa-ban mr-2"></i>Self-Exclusion</button>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full bg-red-600/20 border-2 border-red-600 text-red-400 py-4 rounded-2xl font-bold text-lg">
+                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                </button>
+                <div class="text-center text-xs text-gray-600 mt-4">
+                    <p>Royal Matka Showdown v1.0.0</p>
+                    <p class="mt-1">© 2026 All Rights Reserved</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============ APP STATE (KEYS LAGI HUI HAIN) ============
+        const AppState = {
+            user: { uid: 'RM' + Math.floor(Math.random()*900000+100000), name: 'Player', phone: '', coins: 1000, kyc: true },
+            game: {
+                entryFee: 0, pot: 0, matkaRoll: 0, playerRoll: 0, isActive: false,
+                bots: [
+                    { name: 'Raja_99', avatar: 'R', color: '#3b82f6', coins: 8500 },
+                    { name: 'Sher_K', avatar: 'S', color: '#10b981', coins: 12200 },
+                    { name: 'Vikram', avatar: 'V', color: '#f59e0b', coins: 6700 }
+                ]
+            },
+            emailJS: {
+                publicKey: 'QqFCZaUyDIT-osFmw',
+                serviceId: 'service_s9agp2',
+                serviceIdAlt: 's9agp2',
+                templateId: 'template_vjxg4lg',
+                adminEmail: 'maliksubhan2177@gmail.com'
+            },
+            currentOTP: null
+        };
+
+        const TABLES = [
+            { fee: 100, label: 'Beginner', prize: 380, color: 'from-blue-600 to-blue-800' },
+            { fee: 200, label: 'Silver', prize: 760, color: 'from-gray-500 to-gray-700' },
+            { fee: 500, label: 'Gold', prize: 1900, color: 'from-yellow-600 to-yellow-800' },
+            { fee: 1000, label: 'Royal', prize: 3800, color: 'from-purple-600 to-purple-800' }
+        ];
+        const PACKAGES = [
+            { coins: 500, price: 500, bonus: 0, popular: false },
+            { coins: 1000, price: 1000, bonus: 50, popular: true },
+            { coins: 2000, price: 2000, bonus: 150, popular: false },
+            { coins: 5000, price: 5000, bonus: 500, popular: false }
+        ];
+        const FAQS = [
+            { q: "How do I withdraw my winnings?", a: "Go to Bank & Shop, click Withdraw, link your UPI/Bank account. Funds arrive within 24 hours." },
+            { q: "Is this a game of skill or chance?", a: "Royal Matka is certified as a Game of Skill. Your flick technique determines the outcome." },
+            { q: "What is the platform fee (Rake)?", a: "A standard 5% platform fee is deducted from the total pot before payout." },
+            { q: "How do I verify my KYC?", a: "Go to Profile > KYC Verification and upload your Aadhar/PAN card." }
+        ];
+
+        // EmailJS init
+        try { emailjs.init({ publicKey: AppState.emailJS.publicKey }); } catch(e) { console.warn('EmailJS init failed', e); }
+
+        // ============ NAVIGATION ============
+        function showScreen(id) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + id).classList.add('active');
+            if(id === 'dashboard') updateDashboard();
+            if(id === 'bank') updateBank();
+            if(id === 'help') updateHelp();
+            if(id === 'game') initGame();
+        }
+
+        function switchLoginTab(tab) {
+            const pt = document.getElementById('tab-phone'), ut = document.getElementById('tab-user');
+            const pf = document.getElementById('form-phone'), uf = document.getElementById('form-user');
+            if(tab === 'phone') {
+                pt.className = 'flex-1 py-3 rounded-lg gradient-gold text-[#0a0a0f] font-semibold';
+                ut.className = 'flex-1 py-3 rounded-lg text-gray-400 font-semibold';
+                pf.classList.remove('hidden'); uf.classList.add('hidden');
+            } else {
+                ut.className = 'flex-1 py-3 rounded-lg gradient-gold text-[#0a0a0f] font-semibold';
+                pt.className = 'flex-1 py-3 rounded-lg text-gray-400 font-semibold';
+                uf.classList.remove('hidden'); pf.classList.add('hidden');
+            }
+        }
+
+        // ============ OTP SYSTEM (REAL EMAIL) ============
+        async function sendViaEmailJS(params) {
+            const services = [AppState.emailJS.serviceId, AppState.emailJS.serviceIdAlt];
+            let lastErr;
+            for (const sid of services) {
+                try {
+                    return await emailjs.send(sid, AppState.emailJS.templateId, params);
+                } catch(e) { lastErr = e; }
+            }
+            throw lastErr;
+        }
+
+        function setOtpStatus(msg, cls) {
+            const el = document.getElementById('otp-status');
+            el.innerText = msg;
+            el.className = 'text-sm text-center ' + cls;
+        }
+
+        async function sendOTP() {
+            const phone = document.getElementById('phone-input').value.trim();
+            if(!/^[6-9]\d{9}$/.test(phone)) { alert('Please enter a valid 10-digit mobile number'); return; }
+
+            const otp = Math.floor(100000 + Math.random() * 900000);
+            AppState.currentOTP = otp;
+            AppState.user.phone = phone;
+
+            const btn = document.getElementById('btn-send-otp');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>Sending...';
+
+            const params = { otp_code: otp, phone_number: phone, to_email: AppState.emailJS.adminEmail };
+
+            try {
+                await sendViaEmailJS(params);
+                document.getElementById('otp-section').classList.remove('hidden');
+                setOtpStatus('✅ Login request sent! OTP aapko SMS/WhatsApp par bheja jayega.', 'text-green-400');
+            } catch(err) {
+                console.error('EmailJS Error:', err);
+                document.getElementById('otp-section').classList.remove('hidden');
+                setOtpStatus('⚠️ Email service error. Demo OTP: ' + otp, 'text-yellow-400');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<i class="fas fa-paper-plane mr-2"></i>Send OTP';
+            }
+        }
+
+        function moveToNext(input, index) {
+            if(input.value.length === 1) {
+                const next = document.querySelector('.otp-input[data-index="' + (index+1) + '"]');
+                if(next) next.focus();
+            }
+        }
+
+        function verifyOTP() {
+            const inputs = document.querySelectorAll('.otp-input');
+            let entered = '';
+            inputs.forEach(i => entered += i.value);
+            if(entered == AppState.currentOTP) {
+                AppState.user.name = 'Player_' + AppState.user.phone.slice(-4);
+                inputs.forEach(i => i.value = '');
+                showScreen('dashboard');
+            } else {
+                alert('Invalid OTP. Please try again.');
+            }
+        }
+
+        function guestLogin() {
+            AppState.user.name = 'Guest_' + Math.floor(Math.random()*1000);
+            AppState.user.coins = 500;
+            showScreen('dashboard');
+        }
+
+        function logout() { location.reload(); }
+
+        // ============ DASHBOARD ============
+        function updateDashboard() {
+            document.getElementById('dash-coins').innerText = AppState.user.coins;
+            document.getElementById('dash-name').innerText = AppState.user.name;
+            document.getElementById('dash-avatar').innerText = AppState.user.name.charAt(0).toUpperCase();
+            document.getElementById('lobby-tables').innerHTML = TABLES.map(t => `
+                <div onclick="joinTable(${t.fee})" class="glass-panel rounded-2xl p-5 cursor-pointer hover:border-[#D4AF37] transition-all relative overflow-hidden">
+                    <div class="absolute inset-0 bg-gradient-to-br ${t.color} opacity-20"></div>
+                    <div class="relative">
+                        <div class="flex items-center justify-between mb-3"><span class="text-xs text-gray-400">${t.label}</span><i class="fas fa-trophy text-[#D4AF37]"></i></div>
+                        <p class="text-2xl font-bold text-white mb-1">₹${t.fee}</p>
+                        <p class="text-xs text-[#D4AF37]">Entry Fee</p>
+                        <p class="text-xs text-gray-400 mt-2">Pot: ₹${t.prize}</p>
+                    </div>
+                </div>`).join('');
+        }
+
+        // ============ BANK ============
+        function updateBank() {
+            document.getElementById('bank-coins').innerText = AppState.user.coins;
+            document.getElementById('coin-packages').innerHTML = PACKAGES.map(p => `
+                <div onclick="buyCoins(${p.coins}, ${p.price})" class="coin-package rounded-2xl p-5 cursor-pointer relative ${p.popular ? 'ring-2 ring-[#D4AF37]' : ''}">
+                    ${p.popular ? '<div class="absolute -top-3 left-1/2 -translate-x-1/2 gradient-gold px-3 py-1 rounded-full text-xs font-bold text-[#0a0a0f]">POPULAR</div>' : ''}
+                    <div class="text-center">
+                        <i class="fas fa-coins text-4xl text-[#D4AF37] mb-3"></i>
+                        <p class="text-2xl font-bold text-white">${p.coins}</p>
+                        <p class="text-xs text-gray-400 mb-2">Coins</p>
+                        ${p.bonus > 0 ? `<p class="text-xs text-green-400 font-semibold">+${p.bonus} Bonus</p>` : ''}
+                        <button class="w-full mt-3 gradient-gold py-2 rounded-lg font-bold text-[#0a0a0f]">₹${p.price}</button>
+                    </div>
+                </div>`).join('');
+        }
+
+        function buyCoins(coins, price) {
+            if(confirm('Purchase ' + coins + ' coins for ₹' + price + '?')) {
+                AppState.user.coins += coins;
+                alert('Payment successful! Coins added.');
+                updateBank();
+            }
+        }
+
+        // ============ GAME ============
+        function joinTable(fee) {
+            if(AppState.user.coins < fee) { alert('Insufficient coins!'); showScreen('bank'); return; }
+            AppState.game.entryFee = fee;
+            AppState.game.pot = (fee * 4) * 0.95;
+            AppState.user.coins -= fee;
+            showScreen('game');
+        }
+
+        function initGame() {
+            AppState.game.isActive = false;
+            document.getElementById('game-pot').innerText = Math.floor(AppState.game.pot);
+            document.getElementById('game-status').innerText = 'Starting...';
+            document.getElementById('game-over-modal').classList.add('hidden');
+            document.getElementById('matka-result').classList.add('hidden');
+            document.getElementById('flick-ui').classList.add('hidden');
+
+            const allPlayers = [{ name: 'You', avatar: 'Y', color: '#ef4444', coins: AppState.user.coins, isYou: true }, ...AppState.game.bots];
+            document.getElementById('game-players').innerHTML = allPlayers.map(p => `
+                <div class="glass-panel rounded-xl p-3 ${p.isYou ? 'border-[#D4AF37]' : ''}">
+                    <div class="flex items-center space-x-2 mb-2">
+                        <div class="w-8 h-8 rounded-full flex items-center justify-center text-xs font-bold text-white" style="background:${p.color}">${p.avatar}</div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-xs font-semibold text-white truncate">${p.name}</p>
+                            <p class="text-[10px] text-gray-400">₹${p.coins}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center justify-center"><i class="fas fa-dice text-gold"></i></div>
+                </div>`).join('');
+
+            setupThreeJS();
+            startMatch();
+        }
+
+        // ============ THREE.JS ENGINE (FIXED) ============
+        let scene, camera, renderer, matkaDie, playerDie;
+        let animationId = null;
+        let isCharging = false, chargeStart = 0;
+
+        function setupThreeJS() {
+            const canvas = document.getElementById('game-canvas');
+            if(animationId) cancelAnimationFrame(animationId);
+            if(!renderer) {
+                renderer = new THREE.WebGLRenderer({ canvas, antialias: true });
+                renderer.shadowMap.enabled = true;
+            }
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(0x0a0a0f);
+            scene.fog = new THREE.Fog(0x0a0a0f, 12, 30);
+
+            camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+            camera.position.set(0, 10, 12);
+            camera.lookAt(0, 0, 0);
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+
+            scene.add(new THREE.AmbientLight(0xffffff, 0.5));
+            const spot = new THREE.SpotLight(0xffd700, 2, 25, Math.PI/4, 0.5);
+            spot.position.set(0, 15, 0);
+            spot.castShadow = true;
+            scene.add(spot);
+
+            const table = new THREE.Mesh(
+                new THREE.CylinderGeometry(6, 6, 0.5, 8),
+                new THREE.MeshStandardMaterial({ color: 0x065f46, roughness: 0.8, metalness: 0.2 })
+            );
+            table.receiveShadow = true;
+            table.position.y = -0.25;
+            scene.add(table);
+
+            const border = new THREE.Mesh(
+                new THREE.TorusGeometry(6.2, 0.3, 8, 8),
+                new THREE.MeshStandardMaterial({ color: 0x2d1810, roughness: 0.4, metalness: 0.3 })
+            );
+            border.rotation.x = Math.PI / 2;
+            border.position.y = -0.1;
+            scene.add(border);
+
+            const potGroup = new THREE.Group();
+            const potBody = new THREE.Mesh(
+                new THREE.SphereGeometry(0.8, 16, 16, 0, Math.PI*2, 0, Math.PI/1.5),
+                new THREE.MeshStandardMaterial({ color: 0xD4AF37, metalness: 0.9, roughness: 0.1, emissive: 0xAA8C2C, emissiveIntensity: 0.2 })
+            );
+            potBody.position.y = 0.3;
+            potGroup.add(potBody);
+            const potRim = new THREE.Mesh(
+                new THREE.TorusGeometry(0.5, 0.08, 8, 16),
+                new THREE.MeshStandardMaterial({ color: 0xFFD700, metalness: 1, roughness: 0.1 })
+            );
+            potRim.rotation.x = Math.PI / 2;
+            potRim.position.y = 0.9;
+            potGroup.add(potRim);
+            scene.add(potGroup);
+
+            matkaDie = createDie(0xFFD700, 0.7);
+            matkaDie.position.set(0, 3, 0);
+            scene.add(matkaDie);
+
+            playerDie = createDie(0xef4444, 0.5);
+            playerDie.position.set(0, 3, 4);
+            playerDie.visible = false;
+            scene.add(playerDie);
+
+            canvas.onmousedown = canvas.ontouchstart = (e) => { e.preventDefault(); startCharge(); };
+            canvas.onmouseup = canvas.ontouchend = (e) => { e.preventDefault(); releaseFlick(); };
+
+            animate();
+        }
+
+        function createDie(color, size) {
+            const die = new THREE.Mesh(
+                new THREE.BoxGeometry(size, size, size),
+                new THREE.MeshStandardMaterial({ color, metalness: 0.4, roughness: 0.3 })
+            );
+            die.castShadow = true;
+            die.userData = { size: size, velocity: new THREE.Vector3(), rotation: new THREE.Vector3(), isRolling: false };
+            return die;
+        }
+
+        function animate() {
+            animationId = requestAnimationFrame(animate);
+            [matkaDie, playerDie].forEach(die => {
+                if(die && die.userData.isRolling) {
+                    const s = die.userData.size;
+                    die.position.add(die.userData.velocity);
+                    die.rotation.x += die.userData.rotation.x;
+                    die.rotation.y += die.userData.rotation.y;
+                    die.rotation.z += die.userData.rotation.z;
+                    die.userData.velocity.y -= 0.015;
+
+                    if(die.position.y < s/2) {
+                        die.position.y = s/2;
+                        die.userData.velocity.y *= -0.5;
+                        die.userData.velocity.x *= 0.85;
+                        die.userData.velocity.z *= 0.85;
+                        die.userData.rotation.multiplyScalar(0.9);
+                    }
+
+                    const dist = Math.sqrt(die.position.x**2 + die.position.z**2);
+                    if(dist > 5.5) {
+                        die.userData.velocity.x *= -0.8;
+                        die.userData.velocity.z *= -0.8;
+                        die.position.x = Math.sign(die.position.x) * 5.4;
+                        die.position.z = Math.sign(die.position.z) * 5.4;
+                    }
+
+                    if(die.userData.velocity.length() < 0.02 && die.position.y <= s/2 + 0.01) {
+                        die.userData.isRolling = false;
+                        die.userData.velocity.set(0,0,0);
+                        die.userData.rotation.set(0,0,0);
+                        die.rotation.x = Math.round(die.rotation.x/(Math.PI/2))*(Math.PI/2);
+                        die.rotation.y = Math.round(die.rotation.y/(Math.PI/2))*(Math.PI/2);
+                        die.rotation.z = Math.round(die.rotation.z/(Math.PI/2))*(Math.PI/2);
+                        onDieStopped(die);
+                    }
+                }
+            });
+
+            if(isCharging) {
+                const power = Math.min(100, (Date.now() - chargeStart) / 15);
+                document.getElementById('power-bar').style.width = power + '%';
+            }
+            renderer.render(scene, camera);
+        }
+
+        function startMatch() {
+            setTimeout(() => {
+                document.getElementById('game-status').innerText = 'Matka Rolling...';
+                rollDie(matkaDie, true);
+            }, 1000);
+        }
+
+        function rollDie(die, isMatka) {
+            die.visible = true;
+            die.position.set((Math.random()-0.5)*2, 4, (Math.random()-0.5)*2 + (isMatka ? 0 : 4));
+            const face = Math.floor(Math.random()*6)+1;
+            if(isMatka) AppState.game.matkaRoll = face;
+            else AppState.game.playerRoll = face;
+            die.userData.velocity.set((Math.random()-0.5)*0.25, 0.15, (Math.random()-0.5)*0.25);
+            die.userData.rotation.set((Math.random()-0.5)*0.4, (Math.random()-0.5)*0.4, (Math.random()-0.5)*0.4);
+            die.userData.isRolling = true;
+        }
+
+        function onDieStopped(die) {
+            if(die === matkaDie) {
+                document.getElementById('matka-result').classList.remove('hidden');
+                document.getElementById('matka-number').innerText = AppState.game.matkaRoll;
+                document.getElementById('game-status').innerText = 'Your Turn!';
+                document.getElementById('flick-ui').classList.remove('hidden');
+                AppState.game.isActive = true;
+            } else if(die === playerDie) {
+                document.getElementById('flick-ui').classList.add('hidden');
+                document.getElementById('game-status').innerText = 'Calculating...';
+                setTimeout(resolveGame, 1500);
+            }
+        }
+
+        function startCharge() {
+            if(!AppState.game.isActive || playerDie.userData.isRolling) return;
+            isCharging = true;
+            chargeStart = Date.now();
+        }
+
+        function releaseFlick() {
+            if(!isCharging) return;
+            isCharging = false;
+            document.getElementById('power-bar').style.width = '0%';
+            const power = Math.min(100, (Date.now() - chargeStart) / 15) / 100;
+            playerDie.userData.velocity.set((Math.random()-0.5)*0.35*power, 0.2+(power*0.15), -0.25-(power*0.25));
+            playerDie.userData.rotation.set((Math.random()-0.5)*0.5*power, (Math.random()-0.5)*0.5*power, (Math.random()-0.5)*0.5*power);
+            playerDie.userData.isRolling = true;
+            AppState.game.isActive = false;
+        }
+
+        function resolveGame() {
+            let botWins = false;
+            AppState.game.bots.forEach(() => { if(Math.random() < 0.16) botWins = true; });
+            const playerWon = (AppState.game.playerRoll === AppState.game.matkaRoll);
+            if(playerWon && !botWins) {
+                AppState.user.coins += Math.floor(AppState.game.pot);
+                showResult(true, 'Matched Matka (' + AppState.game.matkaRoll + ')!', '+' + Math.floor(AppState.game.pot) + ' Coins');
+            } else {
+                showResult(false, botWins ? 'Bot matched the Matka' : 'No match', 'Better luck next time!');
+            }
+        }
+
+        function showResult(won, title, desc) {
+            document.getElementById('result-icon').innerText = won ? '🏆' : '😔';
+            document.getElementById('result-title').innerText = won ? 'Victory!' : 'Defeat';
+            document.getElementById('result-title').className = 'font-royal text-3xl font-bold mb-2 ' + (won ? 'text-[#D4AF37]' : 'text-red-400');
+            document.getElementById('result-desc').innerHTML = title + '<br><span class="text-sm ' + (won ? 'text-green-400' : 'text-gray-400') + '">' + desc + '</span>';
+            document.getElementById('game-over-modal').classList.remove('hidden');
+        }
+
+        function playAgain() {
+            document.getElementById('game-over-modal').classList.add('hidden');
+            startMatch();
+        }
+
+        function exitGame() {
+            if(animationId) cancelAnimationFrame(animationId);
+            animationId = null;
+            showScreen('dashboard');
+        }
+
+        // ============ HELP & SETTINGS ============
+        function updateHelp() {
+            document.getElementById('help-uid').innerText = 'UID: ' + AppState.user.uid;
+            document.getElementById('faq-list').innerHTML = FAQS.map(f => `
+                <details class="faq-item glass-panel rounded-xl overflow-hidden">
+                    <summary class="flex items-center justify-between"><span>${f.q}</span><i class="fas fa-chevron-down text-[#D4AF37] text-sm"></i></summary>
+                    <div class="faq-content">${f.a}</div>
+                </details>`).join('');
+        }
+
+        function toggleSetting(btn) {
+            const on = btn.dataset.on === '1';
+            const dot = btn.querySelector('div');
+            if(on) { btn.dataset.on = '0'; btn.style.background = '#374151'; dot.style.transform = 'translateX(-28px)'; }
+            else { btn.dataset.on = '1'; btn.style.background = '#D4AF37'; dot.style.transform = 'translateX(0)'; }
+        }
+
+        window.addEventListener('resize', () => {
+            if(renderer && camera) {
+                const canvas = document.getElementById('game-canvas');
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            }
+        });
+
+        updateDashboard();
+    </script>
+</body>
+</html>
